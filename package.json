@@ -1,0 +1,29 @@
+{
+  "name": "playwright-demoqa",
+  "version": "1.0.0",
+  "description": "This is a test about https://demoqa.com/automation-practice-form web use Playwright",
+  "keywords": [
+    "playwright",
+    "qa",
+    "test"
+  ],
+  "homepage": "https://github.com/Elluiscomun/playwright-demoqa#readme",
+  "bugs": {
+    "url": "https://github.com/Elluiscomun/playwright-demoqa/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elluiscomun/playwright-demoqa.git"
+  },
+  "license": "ISC",
+  "author": "elluiscomun",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.8"
+  }
+}
