@@ -1,8 +1,9 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { ROUTES, MOCKS } from '../constants/constants';
+import { Student } from '../model/student.model';
+import { Hobby } from '../model/hobby.enum';
 
 export class PracticeFormPage {
-    readonly url: string = '/automation-practice-form';
-
     readonly firstNameInput: Locator;
     readonly lastNameInput: Locator;
     readonly emailInput: Locator;
@@ -32,9 +33,9 @@ export class PracticeFormPage {
         this.mobile = page.locator('#userNumber');
         this.dateOfBirthInput = page.locator('#dateOfBirthInput');
         this.subjectsInput = page.locator('#subjectsInput');
-        this.sportRadioButton = page.locator('#hobbies-checkbox-1');
-        this.readingRadioButton = page.locator('#hobbies-checkbox-2');
-        this.musicRadioButton = page.locator('#hobbies-checkbox-3');
+        this.sportRadioButton = page.locator('label[for="hobbies-checkbox-1"]');
+        this.readingRadioButton = page.locator('label[for="hobbies-checkbox-2"]');
+        this.musicRadioButton = page.locator('label[for="hobbies-checkbox-3"]');
         this.uploadPictureInput = page.locator('#uploadPicture');
         this.currentAddressInput = page.locator('#currentAddress');
         this.stadeInput = page.locator('#react-select-3-input');
@@ -43,25 +44,62 @@ export class PracticeFormPage {
     }
 
     async open(): Promise<void> {
-        await this.page.goto('https://demoqa.com/automation-practice-form');
+        await this.page.goto(ROUTES.PRACTICE_FORM);
         await expect(this.firstNameInput).toBeVisible({ timeout: 5000 });
     }
 
-    async fillBasicInfo(): Promise<void> {
-        await this.firstNameInput.fill('Luis');
-        await this.lastNameInput.fill('Doe');
-        await this.emailInput.fill('luis.doe@example.com');
-        await this.mobile.fill('3242333333');
-        await this.genderMale.check();
+    async selectDate(day: string, month: string, year: string): Promise<void> {
         await this.dateOfBirthInput.click();
-        await this.page.locator('.react-datepicker__month-select').selectOption('0');
-        await this.page.locator('.react-datepicker__year-select').selectOption('1990');
-        await this.page.locator('.react-datepicker__day--015').click();
+        await this.page.locator('.react-datepicker__month-select').selectOption(month);
+        await this.page.locator('.react-datepicker__year-select').selectOption(year);
+        await this.page.locator(`.react-datepicker__day--0${day}`).click();
+    }
+    
+    async cleanDate(): Promise<void> {
+        await this.dateOfBirthInput.fill('');
+    }
+
+    async fillStudentInfo(student: Student, subjects: string[], stade: string, city: string): Promise<void> {
+        await this.firstNameInput.fill(student.firstName);
+        await this.lastNameInput.fill(student.lastName);
+        await this.emailInput.fill(student.email);
+        await this.mobile.fill(student.phone);
+
+        for (const subject of subjects) {
+            await this.subjectsInput.fill(subject);
+            await this.subjectsInput.press('Enter');
+        }
+
+        await this.stadeInput.fill(stade);
+        await this.stadeInput.press('Enter');
+
+        await this.cityInput.fill(city);
+        await this.cityInput.press('Enter');
+
+        await this.currentAddressInput.fill(student.address);
+    }
+
+    async selectHobbies(hobbies: Hobby[]): Promise<void> {
+        for (const hobby of hobbies) {
+            await this.page.check(`label[for="${hobby}"]`);
+        }
+    }
+
+    async selectGender(value: string): Promise<void> {
+        await this.page.check(`label[for="gender-radio-${value}"]`);
+    }
+
+    async selectImage(filePath: string): Promise<void> {
+        await this.uploadPictureInput.setInputFiles(filePath);
     }
 
     async submit(): Promise<void> {
         await this.submitButton.scrollIntoViewIfNeeded();
         await this.submitButton.click();
+    }
+
+    async submitWithoutButton(): Promise<void> {
+        await this.page.keyboard.press('Enter');
     }
 
 }
