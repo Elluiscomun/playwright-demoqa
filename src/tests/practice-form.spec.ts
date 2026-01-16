@@ -110,7 +110,7 @@ test.describe('Submission', () => {
 });
 
 test.describe('Manage errors', () => {
-  test('Successful submission when user deletes date', async ({ page }) => {
+  test('Successful submission when user delete date', async ({ page }) => {
     const form = new PracticeFormPage(page);
     const student = createStudent();
 
